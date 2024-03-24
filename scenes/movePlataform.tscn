@@ -1,0 +1,73 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://tilesets/plataforma.tres" type="TileSet" id=1]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 98, 34, 0, 0, 0, 0, 1170, 34, 0, 0, 0, 0, 1168, -467 )
+}
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("path/follow:unit_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "plataform"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("path/follow:unit_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[node name="movePlataform" type="Node2D"]
+
+[node name="plataform" type="KinematicBody2D" parent="."]
+position = Vector2( 791.773, 34 )
+motion/sync_to_physics = true
+
+[node name="tileMap" type="TileMap" parent="plataform"]
+tile_set = ExtResource( 1 )
+collision_use_parent = true
+format = 1
+tile_data = PoolIntArray( 0, 0, 0, 1, 1, 0, 2, 2, 0 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="plataform"]
+polygon = PoolVector2Array( 6, 42, 15, 51, 21, 56, 37, 64, 64, 69, 138, 69, 154, 66, 176, 57, 191, 46, 198, 29, 198, 6, 193, 1, 4, 0, 0, 6, 1, 29 )
+one_way_collision = true
+
+[node name="path" type="Path2D" parent="."]
+curve = SubResource( 1 )
+
+[node name="follow" type="PathFollow2D" parent="path"]
+position = Vector2( 98, 34 )
+rotate = false
+loop = false
+
+[node name="remote" type="RemoteTransform2D" parent="path/follow"]
+remote_path = NodePath("../../../plataform")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "plataform"
+playback_process_mode = 0
+playback_speed = 0.1
+anims/RESET = SubResource( 2 )
+anims/plataform = SubResource( 3 )
